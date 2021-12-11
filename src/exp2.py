@@ -47,5 +47,6 @@ plt.legend()
 #plt.yticks([i*0.05 for i in range(8, 18)])
 #plt.xscale('log')
 plt.savefig("tn_rf.pdf", format="pdf", bbox_inches='tight')
+
 plt.show()
 
