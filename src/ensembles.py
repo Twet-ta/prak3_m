@@ -106,6 +106,49 @@ class GradientBoostingMSE:
         """
 
     def fit(self, X, y, X_val=None, y_val=None):
+        if self.f_size is None:
+            self.f_size = X.shape[1] // 3
+        if not (X_val is None):
+            history = {}
+            history['acc'] = []
+            history['time'] = []
+            history['time'].append(0)
+            history['acc'].append(0)
+            sum = np.zeros(X_val.shape[0])
+        b = np.zeros(self.n_est)
+        a = timeit.default_timer()
+        arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
+        tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
+        tmp_clf.fit(X[:, arr], y)
+        self.clf_f.append(arr)
+        self.clf.append(tmp_clf)
+        if not (X_val is None):
+            t = history['time'][-1]
+            history['time'].append(timeit.default_timer() - a + t)
+            history['acc'].append(mean_squared_error(y_val, sum, squared=False))
+        m = np.zeros(X.shape[0])
+        for i in range(1, self.n_est):
+            a = timeit.default_timer()
+            arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
+            tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
+            m = m + self.lr * b[i - 1] * self.clf[i - 1].predict(X[:, self.clf_f[i - 1]])
+            tmp_clf.fit(X[:, arr], 2 * (y - m))
+
+            def f(k):
+                sum = m + k * tmp_clf.predict(X[:, arr]) - y
+                return np.sum(sum ** 2)
+
+            tmp = minimize_scalar(f)
+            b[i] = tmp.x
+            self.clf.append(tmp_clf)
+            self.clf_f.append(arr)
+            if not (X_val is None):
+                sum = sum + self.lr * b[i] * tmp_clf.predict(X_val[:, arr])
+                t = history['time'][-1]
+                history['time'].append(timeit.default_timer() - a + t)
+                history['acc'].append(mean_squared_error(y_val, sum, squared=False))
+        self.b = b
+        return history
         """
         X : numpy ndarray
             Array of size n_objects, n_features
@@ -114,6 +157,10 @@ class GradientBoostingMSE:
         """
 
     def predict(self, X):
+        sum = np.array(X.shape[0])
+        for i in range(self.n_est):
+            sum = sum + self.lr * self.b[i] * self.clf[i].predict(X[:, self.clf_f[i]])
+        return sum
         """
         X : numpy ndarray
             Array of size n_objects, n_features
