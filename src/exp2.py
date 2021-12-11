@@ -56,8 +56,8 @@ rf_list_s = []
 s = D_tr.shape[1]
 n = 500
 for i in range(1, 11):
-    Cls = RandomForestMSE(n, max_depth=None, random_state=0, feature_subsample_size=s*i//10)
-    Cl = GradientBoostingMSE(n, max_depth=None, random_state=0, feature_subsample_size=s*i//10, learning_rate=0.1)
+    Cls = RandomForestMSE(1000, max_depth=None, random_state=0, feature_subsample_size=s*i//10)
+    Cl = GradientBoostingMSE(300, max_depth=None, random_state=0, feature_subsample_size=s*i//10, learning_rate=0.1)
     gb_list_s.append(Cl.fit(D_tr, Y_tr, D_vl, Y_vl))
     rf_list_s.append(Cls.fit(D_tr, Y_tr, D_vl, Y_vl))
 
