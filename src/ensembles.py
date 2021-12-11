@@ -117,7 +117,7 @@ class GradientBoostingMSE:
             sum = np.zeros(X_val.shape[0])
         b = np.zeros(self.n_est)
         a = timeit.default_timer()
-        arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
+        arr = np.random.choice(X.shape[1], size=self.f_size, replace=True, p=None)
         tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
         tmp_clf.fit(X[:, arr], y)
         self.clf_f.append(arr)
@@ -129,7 +129,7 @@ class GradientBoostingMSE:
         m = np.zeros(X.shape[0])
         for i in range(1, self.n_est):
             a = timeit.default_timer()
-            arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
+            arr = np.random.choice(X.shape[1], size=self.f_size, replace=True, p=None)
             tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
             m = m + self.lr * b[i - 1] * self.clf[i - 1].predict(X[:, self.clf_f[i - 1]])
             tmp_clf.fit(X[:, arr], 2 * (y - m))
