@@ -46,9 +46,10 @@ class RandomForestMSE:
             sum = np.zeros(X_val.shape[0])
         for i in range(self.n_est):
             a = timeit.default_timer()
-            arr = np.random.choice(X.shape[1], size=self.f_size, replace=True, p=None)
+            arr2 = np.random.choice(X.shape[0], size=X.shape[0], replace=True, p=None)
+            arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
             tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
-            tmp_clf.fit(X[:, arr], y)
+            tmp_clf.fit(X[arr2][:, arr], y)
             self.clf.append(tmp_clf)
             self.clf_f.append(arr)
             if not (X_val is None):
@@ -117,9 +118,10 @@ class GradientBoostingMSE:
             sum = np.zeros(X_val.shape[0])
         b = np.zeros(self.n_est)
         a = timeit.default_timer()
-        arr = np.random.choice(X.shape[1], size=self.f_size, replace=True, p=None)
+        arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
+        arr2 = np.random.choice(X.shape[0], size=X.shape[0], replace=True, p=None)
         tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
-        tmp_clf.fit(X[:, arr], y)
+        tmp_clf.fit(X[arr2][:, arr], y)
         self.clf_f.append(arr)
         self.clf.append(tmp_clf)
         if not (X_val is None):
@@ -129,13 +131,14 @@ class GradientBoostingMSE:
         m = np.zeros(X.shape[0])
         for i in range(1, self.n_est):
             a = timeit.default_timer()
-            arr = np.random.choice(X.shape[1], size=self.f_size, replace=True, p=None)
+            arr2 = np.random.choice(X.shape[0], size=X.shape[0], replace=True, p=None)
+            arr = np.random.choice(X.shape[1], size=self.f_size, replace=False, p=None)
             tmp_clf = DecisionTreeRegressor(**self.par, max_depth=self.depth)
-            m = m + self.lr * b[i - 1] * self.clf[i - 1].predict(X[:, self.clf_f[i - 1]])
-            tmp_clf.fit(X[:, arr], 2 * (y - m))
+            m = m + self.lr * b[i - 1] * self.clf[i - 1].predict(X[arr2][:, self.clf_f[i - 1]])
+            tmp_clf.fit(X[arr2][:, arr], 2 * (y - m))
 
             def f(k):
-                sum = m + k * tmp_clf.predict(X[:, arr]) - y
+                sum = m + k * tmp_clf.predict(X[arr2][:, arr]) - y
                 return np.sum(sum ** 2)
 
             tmp = minimize_scalar(f)
