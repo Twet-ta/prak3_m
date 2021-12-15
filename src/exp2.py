@@ -72,7 +72,7 @@ plt.xlabel('feature subsample size, part of number of objects')
 plt.ylabel('RMSE')
 plt.title('Зависимость RMSE от feature subsample size, RF', fontsize=10)
 plt.grid(True)
-plt.legend()
+
 plt.xticks(x1)
 #plt.yticks([i*0.05 for i in range(8, 18)])
 #plt.xscale('log')
@@ -90,7 +90,7 @@ plt.xlabel('feature subsample size, part of number of objects')
 plt.ylabel('Время, с')
 plt.title('Зависимость времени от feature subsample size, RF', fontsize=10)
 plt.grid(True)
-plt.legend()
+
 plt.xticks(x1)
 #plt.yticks([i*0.05 for i in range(8, 18)])
 #plt.xscale('log')
@@ -122,7 +122,7 @@ plt.xlabel('Глубина')
 plt.ylabel('RMSE')
 plt.title('Зависимость RMSE от глубины, RF', fontsize=10)
 plt.grid(True)
-plt.legend()
+
 #plt.yticks([i*0.05 for i in range(8, 18)])
 #plt.xscale('log')
 x1 = [str(i) for i in range(0, 11)]
@@ -145,7 +145,7 @@ plt.xlabel('Глубина')
 plt.ylabel('Время, с')
 plt.title('Зависимость времени от глубины, RF', fontsize=10)
 plt.grid(True)
-plt.legend()
+
 x1 = [str(i) for i in range(0, 11)]
 x1[0] = "None"
 plt.xticks(range(0, 11), x1)
